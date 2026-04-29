@@ -1,81 +1,101 @@
-# 🛡️ Credit Card Fraud Detection — Streamlit Demo
+# Credit Card Fraud Detection (Streamlit + Scikit-learn)
 
-**Capstone Project | Mitarth Pandey & Devansh Bharat Lalwani**
+This project demonstrates a complete supervised machine learning workflow for fraud detection:
 
----
+1. Train a fraud classifier on synthetic data (`train_model.py`).
+2. Save trained artifacts (`model/` folder).
+3. Run a real-time prediction dashboard (`app.py`) using Streamlit.
 
-## ⚡ Quick Setup (5 minutes)
+## Algorithms Used
 
-### Step 1 — Install Python dependencies
-```bash
-pip install -r requirements.txt
-```
+- Logistic Regression (baseline model)
+- Random Forest Classifier (main selected model)
+- StandardScaler (feature preprocessing)
+- Stratified 5-Fold Cross-Validation (model stability check)
 
-### Step 2 — Train the model (run once)
-```bash
-python train_model.py
-```
-You'll see training metrics printed in your terminal.
+## End-to-End Workflow
 
-### Step 3 — Launch the Streamlit app
-```bash
-streamlit run app.py
-```
+1. **Data generation**  
+   Create synthetic legitimate and fraudulent transactions with class imbalance.
 
-Your browser will open automatically at **http://localhost:8501**
+2. **Preprocessing**  
+   Split train/test and scale features with `StandardScaler`.
 
----
+3. **Baseline training**  
+   Train Logistic Regression for comparison.
 
-## 🎯 Demo Script (for presentation tomorrow)
+4. **Main model training**  
+   Train Random Forest (with `class_weight="balanced"`).
 
-### Show 1 — Legitimate transaction
-1. In the sidebar, select **"🟢 Normal Purchase ($45)"**
-2. Click **CLASSIFY TRANSACTION**
-3. Show the green ✅ result, probability bar, and feature contributions
+5. **Evaluation**  
+   Compute ROC-AUC, F1, Precision, Recall, confusion matrix, and CV AUC.
 
-### Show 2 — Fraud detected  
-1. In the sidebar, select **"🔴 Suspicious Pattern"**
-2. Click **CLASSIFY TRANSACTION**
-3. Show the red ⚠️ FRAUD DETECTED alert with animated pulse border
+6. **Save artifacts**  
+   Save model (`fraud_model.pkl`), scaler (`scaler.pkl`), and metadata (`meta.json`).
 
-### Show 3 — Borderline case
-1. Select **"🟡 Borderline Case"**
-2. Show Medium Risk tier
+7. **Deployment UI**  
+   Streamlit app loads artifacts and predicts fraud probability from user inputs.
 
-### Show 4 — Model Performance tab
-1. Click **📈 Model Performance** tab
-2. Show Confusion Matrix, model comparison table, Feature Importance chart
+## Project Structure
 
-### Show 5 — Explain the ML pipeline
-1. Click **📚 How It Works** tab
-2. Walk through the 6-step pipeline
-
----
-
-## 🧠 Key Points to Mention in Presentation
-
-- **Binary Classification** problem: Class 0 (Legit) vs Class 1 (Fraud)
-- **Class Imbalance**: Only 0.17% fraud — handled with `class_weight='balanced'`
-- **Features**: V1–V28 are PCA-transformed (anonymized), plus Amount
-- **Why Random Forest?**: Ensemble method, handles non-linearity, gives feature importance
-- **Validation**: ROC-AUC > 0.95, 5-Fold Cross-Validation, Confusion Matrix
-- **Real-time**: Predictions return in milliseconds
-
----
-
-## 📁 Project Structure
-```
-fraud_detection/
-├── app.py              ← Streamlit dashboard
-├── train_model.py      ← Model training script
-├── requirements.txt    ← Dependencies
-├── README.md           ← This file
-└── model/              ← Created after training
+```text
+StatsProject/
+├── app.py
+├── train_model.py
+├── requirements.txt
+├── README.md
+├── FLOWCHART.md
+└── model/
     ├── fraud_model.pkl
     ├── scaler.pkl
     └── meta.json
 ```
 
----
+## Setup and Run
 
-*Built for Capstone Presentation | Machine Learning — Supervised Classification*
+Run from project root:
+
+```bash
+pip install -r requirements.txt
+python train_model.py
+streamlit run app.py
+```
+
+App URL: `http://localhost:8501`
+
+## Prediction Logic in App
+
+When the user clicks **CLASSIFY TRANSACTION**:
+
+1. Collect 10 input features (`V1, V3, V4, V7, V10, V12, V14, V17, V28, Amount`).
+2. Scale input with saved `scaler.pkl`.
+3. Predict class probabilities using `fraud_model.pkl`.
+4. Use `P(fraud) > 0.5` as decision threshold.
+5. Show class result, risk tier, probability bar, and recommendation.
+
+## Evaluation Metrics Used
+
+- ROC-AUC
+- F1-score (fraud class)
+- Precision (fraud class)
+- Recall (fraud class)
+- Accuracy
+- Confusion Matrix
+- 5-Fold CV Mean/Std AUC
+
+## Important Note for Viva/Presentation
+
+The implementation currently uses:
+
+- Synthetic data generation (not direct Kaggle file ingestion)
+- Logistic Regression + Random Forest
+
+Some dashboard text references advanced items (such as SMOTE/XGBoost/FastAPI), but those are presentation labels and are not fully implemented in the current training script.
+
+## Quick Viva Explanation (1-2 minutes)
+
+"This project is a binary classification system for credit card fraud detection.  
+We generate imbalanced synthetic data, preprocess it with StandardScaler, and train two models: Logistic Regression as baseline and Random Forest as final model.  
+We evaluate using ROC-AUC, F1, Precision, Recall, confusion matrix, and 5-fold stratified cross-validation.  
+After training, we save the model, scaler, and metadata.  
+The Streamlit app loads these artifacts, accepts transaction features, scales them, predicts fraud probability, and displays real-time risk classification with model insights."
