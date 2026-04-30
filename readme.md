@@ -92,10 +92,3 @@ The implementation currently uses:
 
 Some dashboard text references advanced items (such as SMOTE/XGBoost/FastAPI), but those are presentation labels and are not fully implemented in the current training script.
 
-## Quick Viva Explanation (1-2 minutes)
-
-"This project is a binary classification system for credit card fraud detection.  
-We generate imbalanced synthetic data, preprocess it with StandardScaler, and train two models: Logistic Regression as baseline and Random Forest as final model.  
-We evaluate using ROC-AUC, F1, Precision, Recall, confusion matrix, and 5-fold stratified cross-validation.  
-After training, we save the model, scaler, and metadata.  
-The Streamlit app loads these artifacts, accepts transaction features, scales them, predicts fraud probability, and displays real-time risk classification with model insights."
